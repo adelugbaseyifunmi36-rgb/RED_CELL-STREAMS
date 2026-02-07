@@ -3,26 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Browse popular movies & series with trailers. Rent or buy via secure Ghost Gateway (demo only). Powered by TMDB."/>
-  <meta name="keywords" content="movies, series, streaming, trailers, TMDB"/>
-  <meta property="og:title" content="REDCELL-STREAMS • Movies & Series"/>
-  <meta property="og:description" content="Discover movies and series with trailers. Rent or buy via Ghost Gateway (demo)."/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:image" content="https://yourdomain.com/og-image.jpg"/> <!-- Replace with real image -->
-  <meta name="twitter:card" content="summary_large_image"/>
-
+  <meta name="description" content="Browse popular movies & series with trailers. Buy & download via Paystack Titan (demo)."/>
   <title>REDCELL-STREAMS • Movies & Series</title>
 
-  <!-- Preconnects for performance -->
   <link rel="preconnect" href="https://api.themoviedb.org"/>
   <link rel="preconnect" href="https://image.tmdb.org"/>
   <link rel="preconnect" href="https://www.youtube.com"/>
   <link rel="preconnect" href="https://i.ytimg.com"/>
 
-  <!-- Favicon (add your own later) -->
-  <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+  <!-- Paystack inline script -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
 
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" 
         crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -32,7 +23,7 @@
       --bg: #0a0a0f;
       --card: #161b22;
       --accent: #e50914;
-      --ghost: #0f0;
+      --success: #28a745;
       --text: #f5f5f5;
       --text-light: #aaa;
       --modal-bg: rgba(0,0,0,0.94);
@@ -50,26 +41,11 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      transition: background 0.4s, color 0.4s;
     }
 
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--accent);
-      color: white;
-      padding: 8px 12px;
-      z-index: 9999;
-      transition: top 0.3s;
-    }
-    .skip-link:focus { top: 0; }
-
-    .visually-hidden {
-      position: absolute;
-      width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0,0,0,0); border: 0;
-    }
+    .skip-link { position:absolute; top:-40px; left:0; background:var(--accent); color:white; padding:8px 12px; z-index:9999; }
+    .skip-link:focus { top:0; }
+    .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
 
     .navbar {
       background: rgba(10,10,15,0.9);
@@ -86,332 +62,180 @@
     }
     [data-theme="light"] .navbar { background: rgba(255,255,255,0.92); }
 
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-      text-decoration: none;
-    }
-    .logo-img {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 12px rgba(229,9,20,0.4);
-    }
-    .logo-text {
-      font-size: 1.9rem;
-      font-weight: bold;
-      color: var(--accent);
-    }
+    .logo-container { display:flex; align-items:center; gap:0.9rem; text-decoration:none; }
+    .logo-img { width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--accent); box-shadow:0 0 12px rgba(229,9,20,0.4); }
+    .logo-text { font-size:1.9rem; font-weight:bold; color:var(--accent); }
 
-    .nav-links { display: flex; gap: 1.8rem; }
-    .nav-links a {
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links { display:flex; gap:1.8rem; }
+    .nav-links a { color:var(--text); text-decoration:none; font-weight:500; }
+    .nav-links a:hover { color:var(--accent); }
 
     .search-container {
-      position: relative;
-      width: 100%; max-width: 420px;
-      order: 3; flex-grow: 1;
+      position:relative;
+      width:100%; max-width:420px;
+      order:3; flex-grow:1;
     }
-    @media (min-width: 768px) {
-      .search-container { order: unset; width: 38%; }
-      .nav-links { order: unset; }
+    @media (min-width:768px) {
+      .search-container { order:unset; width:38%; }
+      .nav-links { order:unset; }
     }
     .search-bar {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.6rem;
-      border: none;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.12);
-      color: var(--text);
-      font-size: 1rem;
+      width:100%;
+      padding:0.75rem 1rem 0.75rem 2.6rem;
+      border:none;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      color:var(--text);
     }
-    [data-theme="light"] .search-bar { background: rgba(0,0,0,0.08); }
-    .search-bar:focus { outline: none; box-shadow: 0 0 0 2.5px var(--accent); }
-    .search-icon { 
-      position: absolute; left: 1rem; top: 50%; 
-      transform: translateY(-50%); color: var(--text-light); 
-    }
+    [data-theme="light"] .search-bar { background:rgba(0,0,0,0.08); }
+    .search-bar:focus { outline:none; box-shadow:0 0 0 2.5px var(--accent); }
+    .search-icon { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-light); }
 
-    .theme-toggle {
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.3rem;
-      cursor: pointer;
-    }
+    .theme-toggle { background:none; border:none; color:var(--text); font-size:1.3rem; cursor:pointer; }
 
-    .genres-dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .genres-btn {
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 500;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-    .genres-btn:hover { color: var(--accent); }
+    .genres-dropdown { position:relative; display:inline-block; }
+    .genres-btn { color:var(--text); font-weight:500; background:none; border:none; cursor:pointer; }
+    .genres-btn:hover { color:var(--accent); }
     .genres-content {
-      display: none;
-      position: absolute;
-      background: var(--card);
-      min-width: 200px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
-      border-radius: 8px;
-      overflow-y: auto;
-      max-height: 300px;
+      display:none;
+      position:absolute;
+      background:var(--card);
+      min-width:200px;
+      box-shadow:0 8px 16px rgba(0,0,0,0.2);
+      z-index:1;
+      border-radius:8px;
+      max-height:300px;
+      overflow-y:auto;
     }
     .genres-content a {
-      color: var(--text);
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
+      color:var(--text);
+      padding:12px 16px;
+      text-decoration:none;
+      display:block;
     }
-    .genres-content a:hover { background: var(--accent); color: white; }
-    .genres-dropdown:hover .genres-content { display: block; }
+    .genres-content a:hover { background:var(--accent); color:white; }
+    .genres-dropdown:hover .genres-content { display:block; }
 
-    main { padding: 90px 5% 100px; }
-    h1 { margin-bottom: 1.8rem; font-size: clamp(1.8rem, 5vw, 2.6rem); }
+    main { padding:90px 5% 100px; }
+    h1 { margin-bottom:1.8rem; font-size:clamp(1.8rem,5vw,2.6rem); }
 
     .movies-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1.4rem;
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
+      gap:1.4rem;
     }
-    @media (min-width: 600px) { 
-      .movies-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); } 
+    @media (min-width:600px) { 
+      .movies-grid { grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); } 
     }
 
     .movie-card {
-      background: var(--card);
-      border-radius: 10px;
-      overflow: hidden;
-      transition: all 0.28s ease;
-      cursor: pointer;
+      background:var(--card);
+      border-radius:10px;
+      overflow:hidden;
+      transition:all 0.28s ease;
+      cursor:pointer;
     }
     .movie-card:hover, .movie-card:focus { 
-      transform: scale(1.06); 
-      box-shadow: 0 12px 30px rgba(229,9,20,0.22); 
-      outline: none;
+      transform:scale(1.06); 
+      box-shadow:0 12px 30px rgba(229,9,20,0.22); 
     }
-    .poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-    .no-poster { 
-      background: #222; 
-      display: grid; place-items: center; 
-      font-size: 0.9rem; color: #777; 
-      aspect-ratio: 2/3;
-    }
-    .movie-info { padding: 0.9rem; }
-    .title { font-size: 1.05rem; margin-bottom: 0.3rem; }
-    .year { color: var(--text-light); font-size: 0.9rem; }
+    .poster { width:100%; aspect-ratio:2/3; object-fit:cover; }
+    .no-poster { background:#222; display:grid; place-items:center; font-size:0.9rem; color:#777; aspect-ratio:2/3; }
 
-    /* Skeleton loading */
-    .skeleton {
-      background: var(--card);
-      border-radius: 10px;
-      overflow: hidden;
-    }
+    .movie-info { padding:0.9rem; }
+    .title { font-size:1.05rem; margin-bottom:0.3rem; }
+    .year { color:var(--text-light); font-size:0.9rem; }
+
+    .skeleton { background:var(--card); border-radius:10px; overflow:hidden; }
     .skeleton-poster {
-      width: 100%;
-      aspect-ratio: 2/3;
-      background: linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
-      background-size: 200% 100%;
-      animation: skeleton-loading 1.5s infinite;
+      width:100%; aspect-ratio:2/3;
+      background:linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
+      background-size:200% 100%;
+      animation:skeleton-loading 1.5s infinite;
     }
-    .skeleton-text {
-      height: 1rem;
-      background: #333;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-      animation: skeleton-loading 1.5s infinite;
-    }
-    .skeleton-text.short { width: 60%; }
-    @keyframes skeleton-loading {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
+    .skeleton-text { height:1rem; background:#333; border-radius:4px; margin-bottom:0.5rem; animation:skeleton-loading 1.5s infinite; }
+    .skeleton-text.short { width:60%; }
+    @keyframes skeleton-loading { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    .loading, .error, .no-results {
-      text-align: center;
-      padding: 6rem 1rem;
-      font-size: 1.4rem;
-      color: var(--text-light);
-    }
+    .loading, .error, .no-results { text-align:center; padding:6rem 1rem; font-size:1.4rem; color:var(--text-light); }
 
-    /* Modal */
     .modal {
-      position: fixed; inset: 0;
-      background: var(--modal-bg);
-      display: none;
-      align-items: center; justify-content: center;
-      z-index: 2000;
-      padding: 1rem;
+      position:fixed; inset:0;
+      background:var(--modal-bg);
+      display:none;
+      align-items:center; justify-content:center;
+      z-index:2000;
+      padding:1rem;
     }
     .modal-content {
-      background: var(--card);
-      border-radius: 14px;
-      max-width: 900px;
-      width: 100%;
-      max-height: 92vh;
-      overflow-y: auto;
-      position: relative;
+      background:var(--card);
+      border-radius:14px;
+      max-width:900px;
+      width:100%;
+      max-height:92vh;
+      overflow-y:auto;
+      position:relative;
     }
     .close-btn {
-      position: absolute;
-      top: 1rem; right: 1.5rem;
-      font-size: 2rem;
-      cursor: pointer;
-      color: var(--text);
-      background: none;
-      border: none;
+      position:absolute;
+      top:1rem; right:1.5rem;
+      font-size:2rem;
+      cursor:pointer;
+      background:none;
+      border:none;
+      color:var(--text);
     }
 
-    .modal-header { padding: 1.5rem 2rem 0; }
-    .modal-body { padding: 0 2rem 2rem; }
+    .modal-header { padding:1.5rem 2rem 0; }
+    .modal-body { padding:0 2rem 2rem; }
     .trailer-container { 
-      position: relative; padding-bottom: 56.25%; height: 0; margin: 1.5rem 0; 
-      background: #000; cursor: pointer; border-radius: 10px; overflow: hidden;
+      position:relative; padding-bottom:56.25%; height:0; margin:1.5rem 0; 
+      background:#000; cursor:pointer; border-radius:10px; overflow:hidden;
     }
-    .trailer-container img {
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    }
+    .trailer-container img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
     .trailer-container .play-btn {
-      position: absolute; inset: 0; margin: auto;
-      width: 80px; height: 80px;
-      background: rgba(229,9,20,0.8);
-      border: none; border-radius: 50%;
-      color: white; font-size: 2.5rem;
-      cursor: pointer;
-      transition: transform 0.2s;
+      position:absolute; inset:0; margin:auto;
+      width:80px; height:80px;
+      background:rgba(229,9,20,0.8);
+      border:none; border-radius:50%;
+      color:white; font-size:2.5rem;
+      cursor:pointer;
     }
-    .trailer-container .play-btn:hover { transform: scale(1.1); }
-    .trailer-container iframe {
-      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
-    }
-
-    .rent-info { 
-      margin: 1.5rem 0; padding: 1rem; 
-      background: rgba(229,9,20,0.12); border-radius: 8px; 
-      text-align: center; 
-    }
+    .trailer-container .play-btn:hover { transform:scale(1.1); }
+    .trailer-container iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
 
     .btn {
-      padding: 0.8rem 1.6rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      margin: 0.4rem;
-      transition: all 0.2s;
+      padding:0.8rem 1.6rem;
+      border:none;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+      margin:0.4rem;
+      transition:all 0.2s;
     }
-    .btn-rent { background: #0066cc; color: white; }
-    .btn-buy { background: var(--accent); color: white; }
-    .btn-library { background: #444; color: white; }
-    .btn-ghost { background: var(--ghost); color: #000; font-weight: bold; }
-    .btn-download { background: #28a745; color: white; }
-    .btn:hover { opacity: 0.92; transform: translateY(-2px); }
-
-    /* Ghost Payment Modal */
-    #ghostPaymentModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.95);
-      z-index: 3000;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .ghost-container {
-      background: #111;
-      padding: clamp(1.5rem, 5vw, 2.5rem);
-      border-radius: 12px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 0 25px rgba(0,255,0,0.15);
-      border: 1px solid rgba(0,255,0,0.2);
-    }
-    .ghost-header { text-align: center; margin-bottom: 1.8rem; }
-    .ghost-header h2 {
-      color: var(--ghost);
-      margin: 0.5rem 0;
-      font-size: clamp(1.6rem, 6vw, 2.2rem);
-    }
-    .ghost-info {
-      background: rgba(0,255,0,0.08);
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1.8rem;
-      text-align: center;
-      font-size: clamp(0.9rem, 3.8vw, 1rem);
-      line-height: 1.5;
-    }
-    .payment-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-    .form-group { display: flex; flex-direction: column; }
-    label {
-      margin-bottom: 0.5rem;
-      color: #ccc;
-      font-weight: 500;
-      font-size: clamp(0.9rem, 3.5vw, 1rem);
-    }
-    input, select {
-      width: 100%;
-      padding: 0.9rem 1rem;
-      border: none;
-      border-radius: 6px;
-      background: #222;
-      color: white;
-      font-size: clamp(0.95rem, 4vw, 1.05rem);
-      min-height: 48px;
-    }
-    input:focus, select:focus {
-      outline: 2px solid var(--ghost);
-      outline-offset: 2px;
-    }
-    .card-row {
-      display: flex;
-      gap: 1rem;
-    }
-    @media (max-width: 380px) {
-      .card-row { flex-direction: column; }
-      .ghost-container { padding: 1.2rem; }
-    }
+    .btn-play { background:var(--success); color:white; }
+    .btn-buy { background:var(--accent); color:white; }
+    .btn-download { background:#0066cc; color:white; }
+    .btn:hover { opacity:0.92; transform:translateY(-2px); }
 
     footer {
-      text-align: center;
-      padding: 2rem;
-      color: var(--text-light);
-      font-size: 0.9rem;
-      margin-top: 2rem;
+      text-align:center;
+      padding:2rem;
+      color:var(--text-light);
+      font-size:0.9rem;
+      margin-top:2rem;
     }
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer a { color:var(--accent); text-decoration:none; }
+    footer a:hover { text-decoration:underline; }
   </style>
 </head>
 <body>
   <a href="#mainContent" class="skip-link">Skip to main content</a>
 
   <header class="navbar">
-    <a href="#" class="logo-container" aria-label="REDCELL-STREAMS Home">
-      <img
-        src="https://thumbs.dreamstime.com/z/captivating-three-dimensional-rendering-showcases-vibrant-red-sphere-its-surface-composed-complex-interwoven-lattice-365845325.jpg"
-        alt="REDCELL-STREAMS Logo - Red sphere lattice"
-        class="logo-img"
-        loading="lazy"
-      />
+    <a href="#" class="logo-container" aria-label="Home">
+      <img src="https://thumbs.dreamstime.com/z/captivating-three-dimensional-rendering-showcases-vibrant-red-sphere-its-surface-composed-complex-interwoven-lattice-365845325.jpg"
+           alt="Logo" class="logo-img" loading="lazy"/>
       <span class="logo-text">REDCELL-STREAMS</span>
     </a>
 
@@ -425,25 +249,17 @@
     </nav>
 
     <div class="search-container">
-      <label for="searchInput" class="visually-hidden">Search movies and series</label>
       <i class="fas fa-search search-icon" aria-hidden="true"></i>
-      <input
-        type="search"
-        id="searchInput"
-        class="search-bar"
-        placeholder="Search movies & series..."
-        aria-label="Search movies and series"
-      />
+      <input type="search" id="searchInput" class="search-bar" placeholder="Search movies & series..." aria-label="Search"/>
     </div>
 
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light theme">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
       <i class="fas fa-moon"></i>
     </button>
   </header>
 
   <main id="mainContent">
     <h1 id="pageTitle">Popular Movies</h1>
-
     <div class="movies-grid" id="moviesGrid"></div>
 
     <div class="loading" id="loading">Loading awesome movies...</div>
@@ -452,7 +268,6 @@
       No movies or series found. Try another search!
     </div>
 
-    <!-- Skeleton template -->
     <template id="skeletonTemplate">
       <div class="movie-card skeleton">
         <div class="poster skeleton-poster"></div>
@@ -467,7 +282,7 @@
   <!-- Movie Details Modal -->
   <div class="modal" id="movieModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal()" aria-label="Close movie details">×</button>
+      <button class="close-btn" onclick="closeModal()" aria-label="Close">×</button>
       <div class="modal-header">
         <h2 id="modalTitle"></h2>
       </div>
@@ -475,167 +290,87 @@
         <div id="modalPoster" style="max-width:320px; margin:0 auto 1.5rem;"></div>
         <div class="trailer-container" id="trailerContainer"></div>
         <p id="modalOverview"></p>
-        <div class="rent-info" id="rentStatus"></div>
-        <div style="text-align:center; margin-top:1.5rem;" id="actionButtons">
-          <button class="btn btn-rent" id="rentBtn">Rent via GHOST GATEWAY</button>
-          <button class="btn btn-buy" id="buyBtn">Buy via GHOST GATEWAY</button>
-          <button class="btn btn-library" id="addToLibBtn">+ Add to Library (Free Preview)</button>
-        </div>
+        <div style="text-align:center; margin-top:2rem;" id="actionButtons"></div>
       </div>
-    </div>
-  </div>
-
-  <!-- Ghost Payment Modal (DEMO ONLY) -->
-  <div id="ghostPaymentModal" role="dialog" aria-labelledby="ghostTitle" aria-modal="true">
-    <div class="ghost-container">
-      <div class="ghost-header">
-        <h2 id="ghostTitle">GHOST GATEWAY</h2>
-        <p style="color:#0f0; font-size: clamp(0.85rem, 3.5vw, 0.95rem);">Secure • Fast • Anonymous (DEMO ONLY)</p>
-      </div>
-      <div class="ghost-info" id="paymentInfo">
-        This is a demonstration payment form.<br>No real transactions occur.
-      </div>
-      <form id="ghostPaymentForm" class="payment-form">
-        <div class="form-group">
-          <label for="method">Payment Method</label>
-          <select id="method" required>
-            <option value="">Select method</option>
-            <option value="card">Card Payment</option>
-            <option value="transfer">Bank Transfer</option>
-          </select>
-        </div>
-        <div id="cardFields" style="display:none;">
-          <div class="form-group">
-            <label for="cardName">Cardholder Name</label>
-            <input type="text" id="cardName" placeholder="John Doe" required>
-          </div>
-          <div class="form-group">
-            <label for="cardNumber">Card Number</label>
-            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
-          </div>
-          <div class="card-row">
-            <div class="form-group" style="flex:1;">
-              <label for="expiry">Expiry Date</label>
-              <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
-            </div>
-            <div class="form-group" style="flex:1;">
-              <label for="cvv">CVV</label>
-              <input type="text" id="cvv" placeholder="123" maxlength="4" required>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="amountDisplay">Amount (₦)</label>
-          <input type="text" id="amountDisplay" readonly>
-        </div>
-        <div class="form-group">
-          <label>Central Account Balance (Demo)</label>
-          <p id="accountBalance" style="color: var(--ghost);">₦0</p>
-        </div>
-        <button type="submit" class="btn btn-ghost">Pay Now (Demo)</button>
-        <button type="button" class="btn btn-cancel" onclick="closeGhostModal()">Cancel</button>
-      </form>
     </div>
   </div>
 
   <footer>
-    Data provided by <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">The Movie Database (TMDB)</a><br>
-    <small>This site is for demonstration purposes only. Ghost Gateway payments are simulated.</small>
+    Data provided by <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TMDB</a><br>
+    <small>Payments powered by Paystack • This is a demo site</small>
   </footer>
 
   <script>
-    // ──────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────
     // CONFIG
-    // ──────────────────────────────────────────────────────────────
-    const API_KEY = 'd61447ebf636705050a52f468b08d5a7'; // TODO: MOVE TO BACKEND IN PRODUCTION!
+    // ────────────────────────────────────────────────
+    const API_KEY = 'd61447ebf636705050a52f468b08d5a7';
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMG_URL = 'https://image.tmdb.org/t/p/w500';
     const YOUTUBE_EMBED = 'https://www.youtube.com/embed/';
     const YOUTUBE_THUMB = 'https://i.ytimg.com/vi/';
 
-    // DOM Elements
-    const moviesGrid = document.getElementById('moviesGrid');
-    const searchInput = document.getElementById('searchInput');
-    const pageTitle = document.getElementById('pageTitle');
-    const loading = document.getElementById('loading');
-    const errorDiv = document.getElementById('error');
-    const noResults = document.getElementById('noResults');
-    const movieModal = document.getElementById('movieModal');
-    const ghostModal = document.getElementById('ghostPaymentModal');
-    const themeToggle = document.getElementById('themeToggle');
-    const genresList = document.getElementById('genresList');
-    const actionButtons = document.getElementById('actionButtons');
+    // IMPORTANT: Replace with your real Paystack **public key**
+    const PAYSTACK_PUBLIC_KEY = 'pk_test_d69d52d766a1668a5b295c4853b66cd66ddf8ef4'; // ← CHANGE THIS
+
+    // DOM
+    const moviesGrid     = document.getElementById('moviesGrid');
+    const searchInput    = document.getElementById('searchInput');
+    const pageTitle      = document.getElementById('pageTitle');
+    const loading        = document.getElementById('loading');
+    const errorDiv       = document.getElementById('error');
+    const noResults      = document.getElementById('noResults');
+    const movieModal     = document.getElementById('movieModal');
+    const themeToggle    = document.getElementById('themeToggle');
+    const genresList     = document.getElementById('genresList');
+    const actionButtons  = document.getElementById('actionButtons');
 
     let currentMovie = null;
-    let currentAction = null;
-    let rentedMovies = JSON.parse(localStorage.getItem('rentedMovies')) || {};
-    let boughtMovies = JSON.parse(localStorage.getItem('boughtMovies')) || {};
-    let library = JSON.parse(localStorage.getItem('library')) || [];
     let lastFocusedElement = null;
     let currentPage = 1;
     let isLoading = false;
     let currentUrl = `${BASE_URL}/movie/popular?api_key=${API_KEY}`;
-    let genres = [];
-    let centralAccountBalance = parseInt(localStorage.getItem('centralAccountBalance')) || 0;
 
-    // ──────────────────────────────────────────────────────────────
-    // THEME TOGGLE + PERSISTENCE
-    // ──────────────────────────────────────────────────────────────
+    let boughtMovies = JSON.parse(localStorage.getItem('boughtMovies') || '{}');
+
+    // ────────────────────────────────────────────────
+    // THEME
+    // ────────────────────────────────────────────────
     function setTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
-      themeToggle.innerHTML = theme === 'dark' 
-        ? '<i class="fas fa-moon"></i>' 
-        : '<i class="fas fa-sun"></i>';
+      themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
       localStorage.setItem('theme', theme);
     }
-
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-
+    setTheme(localStorage.getItem('theme') || 'dark');
     themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      setTheme(next);
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      setTheme(cur === 'dark' ? 'light' : 'dark');
     });
 
-    // ──────────────────────────────────────────────────────────────
-    // SKELETON LOADERS
-    // ──────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────
+    // SKELETON + MOVIES
+    // ────────────────────────────────────────────────
     function showSkeletons(count = 12) {
-      const template = document.getElementById('skeletonTemplate').content;
-      for (let i = 0; i < count; i++) {
-        moviesGrid.appendChild(template.cloneNode(true));
-      }
+      const t = document.getElementById('skeletonTemplate').content;
+      for (let i = 0; i < count; i++) moviesGrid.appendChild(t.cloneNode(true));
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // FETCH & DISPLAY MOVIES
-    // ──────────────────────────────────────────────────────────────
     async function getMovies(url, page = 1, append = false) {
       if (isLoading) return;
       isLoading = true;
       loading.style.display = 'block';
-      if (!append) {
-        showSkeletons(12);
-        moviesGrid.innerHTML = '';
-      } else {
-        showSkeletons(6);
-      }
-      errorDiv.style.display = 'none';
-      noResults.style.display = 'none';
+      if (!append) { showSkeletons(); moviesGrid.innerHTML = ''; } else showSkeletons(6);
+
+      errorDiv.style.display = noResults.style.display = 'none';
 
       try {
         const res = await fetch(`${url}&page=${page}`);
-        if (!res.ok) throw new Error(`TMDB error: ${res.status}`);
-        const data = await res.json();
-
-        if (!data.results?.length) {
-          noResults.style.display = 'block';
-        } else {
-          displayMovies(data.results, append);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { results } = await res.json();
+        if (!results?.length && !append) noResults.style.display = 'block';
+        else displayMovies(results, append);
       } catch (err) {
-        errorDiv.textContent = `Error loading movies: ${err.message}. Please try again.`;
+        errorDiv.textContent = `Error: ${err.message}`;
         errorDiv.style.display = 'block';
       } finally {
         loading.style.display = 'none';
@@ -645,42 +380,33 @@
 
     function displayMovies(movies, append = false) {
       if (!append) moviesGrid.innerHTML = '';
-      movies.forEach(movie => {
+      movies.forEach(m => {
         const card = document.createElement('div');
-        card.classList.add('movie-card');
+        card.className = 'movie-card';
         card.tabIndex = 0;
-        card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', `View details for ${movie.title || movie.name || 'Untitled'}`);
+        card.setAttribute('role','button');
+        card.setAttribute('aria-label',`View ${m.title || m.name}`);
 
-        // Keyboard support
-        card.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openModal(movie);
-          }
-        });
-        card.addEventListener('click', () => openModal(movie));
+        card.onclick = () => openModal(m);
+        card.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(m); } };
 
-        const poster = movie.poster_path
-          ? `<img src="${IMG_URL}${movie.poster_path}" alt="Poster for ${movie.title || movie.name}" class="poster" loading="lazy">`
+        const poster = m.poster_path
+          ? `<img src="${IMG_URL}${m.poster_path}" alt="${m.title||m.name}" class="poster" loading="lazy">`
           : `<div class="no-poster">No Poster</div>`;
 
         card.innerHTML = `
           ${poster}
           <div class="movie-info">
-            <div class="title">${movie.title || movie.name || 'Untitled'}</div>
-            <div class="year">${(movie.release_date || movie.first_air_date || '').slice(0,4) || 'N/A'}</div>
+            <div class="title">${m.title || m.name || 'Untitled'}</div>
+            <div class="year">${(m.release_date || m.first_air_date || '----').slice(0,4)}</div>
           </div>
         `;
         moviesGrid.appendChild(card);
       });
-      // Remove skeletons
-      moviesGrid.querySelectorAll('.skeleton').forEach(el => el.remove());
+      document.querySelectorAll('.skeleton').forEach(el => el.remove());
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // INFINITE SCROLL
-    // ──────────────────────────────────────────────────────────────
+    // Infinite scroll
     window.addEventListener('scroll', () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !isLoading) {
         currentPage++;
@@ -688,18 +414,16 @@
       }
     });
 
-    // ──────────────────────────────────────────────────────────────
-    // DEBOUNCED SEARCH
-    // ──────────────────────────────────────────────────────────────
+    // Search
     let searchTimeout;
     searchInput.addEventListener('input', () => {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
-        const query = searchInput.value.trim();
+        const q = searchInput.value.trim();
         currentPage = 1;
-        if (query) {
-          pageTitle.textContent = `Results for "${query}"`;
-          currentUrl = `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+        if (q) {
+          pageTitle.textContent = `Results for "${q}"`;
+          currentUrl = `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(q)}`;
         } else {
           pageTitle.textContent = 'Popular Movies';
           currentUrl = `${BASE_URL}/movie/popular?api_key=${API_KEY}`;
@@ -708,48 +432,41 @@
       }, 400);
     });
 
-    // ──────────────────────────────────────────────────────────────
-    // FETCH GENRES & POPULATE DROPDOWN
-    // ──────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────
+    // GENRES
+    // ────────────────────────────────────────────────
     async function loadGenres() {
       try {
         const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
-        const data = await res.json();
-        genres = data.genres;
-        genresList.innerHTML = genres.map(genre => `
-          <a href="#" onclick="showGenre(${genre.id}, '${genre.name}')">${genre.name}</a>
+        const { genres } = await res.json();
+        genresList.innerHTML = genres.map(g => `
+          <a href="#" onclick="showGenre(${g.id}, '${g.name}')">${g.name}</a>
         `).join('');
-      } catch (err) {
-        console.error('Failed to load genres:', err);
-      }
+      } catch {}
     }
 
-    function showGenre(genreId, genreName) {
+    function showGenre(id, name) {
       currentPage = 1;
-      pageTitle.textContent = `${genreName} Movies`;
-      currentUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}`;
+      pageTitle.textContent = `${name} Movies`;
+      currentUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${id}`;
       getMovies(currentUrl, currentPage);
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // FETCH TRAILER
-    // ──────────────────────────────────────────────────────────────
-    async function getTrailerKey(movieId, mediaType = 'movie') {
+    // ────────────────────────────────────────────────
+    // TRAILER
+    // ────────────────────────────────────────────────
+    async function getTrailerKey(id, type = 'movie') {
       try {
-        const res = await fetch(`${BASE_URL}/${mediaType}/${movieId}/videos?api_key=${API_KEY}`);
-        const data = await res.json();
-        const trailer = data.results?.find(v => 
-          (v.type === 'Trailer' || v.type === 'Teaser') && v.site === 'YouTube'
-        );
-        return trailer?.key || null;
-      } catch {
-        return null;
-      }
+        const res = await fetch(`${BASE_URL}/${type}/${id}/videos?api_key=${API_KEY}`);
+        const { results } = await res.json();
+        const t = results?.find(v => (v.type === 'Trailer' || v.type === 'Teaser') && v.site === 'YouTube');
+        return t?.key || null;
+      } catch { return null; }
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // MODAL + FOCUS TRAP + DOWNLOAD BUTTON
-    // ──────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────
+    // MOVIE MODAL – Play + Buy side by side
+    // ────────────────────────────────────────────────
     async function openModal(movie) {
       currentMovie = movie;
       lastFocusedElement = document.activeElement;
@@ -758,82 +475,69 @@
       document.getElementById('modalOverview').textContent = movie.overview || 'No overview available.';
 
       // Poster
-      const posterHtml = movie.poster_path 
-        ? `<img src="${IMG_URL}${movie.poster_path}" alt="Poster for ${movie.title || movie.name}" style="width:100%; border-radius:10px;" loading="lazy">`
-        : '<div style="background:#222; height:480px; display:grid; place-items:center; color:#777;">No Poster</div>';
-      document.getElementById('modalPoster').innerHTML = posterHtml;
+      document.getElementById('modalPoster').innerHTML = movie.poster_path
+        ? `<img src="${IMG_URL}${movie.poster_path}" alt="Poster" style="width:100%;border-radius:10px;" loading="lazy">`
+        : '<div style="background:#222;height:480px;display:grid;place-items:center;color:#777;">No Poster</div>';
 
-      // Trailer (lite embed)
-      const trailerKey = await getTrailerKey(movie.id, movie.media_type || 'movie');
-      const trailerContainer = document.getElementById('trailerContainer');
-
-      if (trailerKey) {
-        trailerContainer.innerHTML = `
-          <img src="${YOUTUBE_THUMB}${trailerKey}/hqdefault.jpg" alt="Trailer thumbnail for ${movie.title || movie.name}" loading="lazy">
+      // Trailer
+      const key = await getTrailerKey(movie.id, movie.media_type || 'movie');
+      const container = document.getElementById('trailerContainer');
+      if (key) {
+        container.innerHTML = `
+          <img src="${YOUTUBE_THUMB}${key}/hqdefault.jpg" alt="Trailer" loading="lazy">
           <button class="play-btn" aria-label="Play trailer">▶</button>
         `;
-        trailerContainer.dataset.videoId = trailerKey;
-
-        // Lazy load on click
-        trailerContainer.addEventListener('click', function playOnce() {
-          this.innerHTML = `<iframe src="${YOUTUBE_EMBED}${trailerKey}?autoplay=1" title="Trailer for ${movie.title || movie.name}" allowfullscreen loading="lazy"></iframe>`;
-          this.removeEventListener('click', playOnce);
-        }, { once: true });
+        container.onclick = function playOnce() {
+          this.innerHTML = `<iframe src="${YOUTUBE_EMBED}${key}?autoplay=1" allowfullscreen></iframe>`;
+          this.onclick = null;
+        };
       } else {
-        trailerContainer.innerHTML = '<p style="text-align:center; color:var(--text-light); padding:2rem;">No trailer available</p>';
+        container.innerHTML = '<p style="text-align:center;padding:3rem 1rem;color:#aaa;">No trailer available</p>';
       }
 
-      // Rent/Buy status (demo)
-      let status = '';
-      if (boughtMovies[movie.id]) {
-        status = 'Owned permanently';
-      } else if (rentedMovies[movie.id]) {
-        status = 'Rented until: ' + rentedMovies[movie.id];
-      } else {
-        status = 'Not rented or bought';
-      }
-      document.getElementById('rentStatus').textContent = status;
-
-      // Show/hide buttons
+      // Buttons
       actionButtons.innerHTML = '';
+
       if (boughtMovies[movie.id]) {
-        const downloadBtn = document.createElement('button');
-        downloadBtn.classList.add('btn', 'btn-download');
-        downloadBtn.textContent = 'Download';
-        downloadBtn.onclick = () => downloadMovie(movie);
-        actionButtons.appendChild(downloadBtn);
-      } else {
+        // Owned → Play + Download
         actionButtons.innerHTML = `
-          <button class="btn btn-rent" id="rentBtn">Rent via GHOST GATEWAY</button>
-          <button class="btn btn-buy" id="buyBtn">Buy via GHOST GATEWAY</button>
-          <button class="btn btn-library" id="addToLibBtn">+ Add to Library (Free Preview)</button>
+          <button class="btn btn-play">Play</button>
+          <button class="btn btn-download">Download</button>
         `;
-        document.getElementById('rentBtn').onclick = () => openGhostModal('rent');
-        document.getElementById('buyBtn').onclick = () => openGhostModal('buy');
+        actionButtons.querySelector('.btn-play').onclick = () => {
+          alert(`Playing: ${movie.title || movie.name} (demo player)`);
+        };
+        actionButtons.querySelector('.btn-download').onclick = () => {
+          const text = `Downloaded: ${movie.title || movie.name} (${new Date().toLocaleDateString()})\n(DEMO)`;
+          const blob = new Blob([text], {type: 'text/plain'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${movie.title || movie.name} - REDCELL.txt`;
+          a.click();
+          URL.revokeObjectURL(url);
+        };
+      } else {
+        // Not owned → Play (preview) + Buy
+        actionButtons.innerHTML = `
+          <button class="btn btn-play">Play (Preview)</button>
+          <button class="btn btn-buy">Buy - ₦4,000</button>
+        `;
+        actionButtons.querySelector('.btn-play').onclick = () => {
+          alert(`Playing preview of: ${movie.title || movie.name}`);
+        };
+        actionButtons.querySelector('.btn-buy').onclick = () => payWithPaystack(movie);
       }
 
       movieModal.style.display = 'flex';
       movieModal.querySelector('.close-btn').focus();
-
-      // Focus trap
       trapFocus(movieModal);
-    }
-
-    function downloadMovie(movie) {
-      // Simulate download (e.g., create a blob or link to a placeholder file)
-      const link = document.createElement('a');
-      link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`Downloaded: ${movie.title || movie.name} (Demo)`);
-      link.download = `${movie.title || movie.name}.txt`;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
 
     function closeModal() {
       movieModal.style.display = 'none';
       document.getElementById('trailerContainer').innerHTML = '';
-      if (lastFocusedElement) lastFocusedElement.focus();
+      lastFocusedElement?.focus();
     }
 
     movieModal.addEventListener('click', e => {
@@ -841,80 +545,72 @@
     });
 
     function trapFocus(modal) {
-      const focusable = modal.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      if (!focusable.length) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      modal.addEventListener('keydown', e => {
+      const els = modal.querySelectorAll('button, [href], input, select, [tabindex]:not([tabindex="-1"])');
+      if (!els.length) return;
+      let first = els[0], last = els[els.length-1];
+      modal.onkeydown = e => {
         if (e.key === 'Tab') {
-          if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
         }
         if (e.key === 'Escape') closeModal();
+      };
+    }
+
+    // ────────────────────────────────────────────────
+    // PAYSTACK TITAN PAYMENT
+    // ────────────────────────────────────────────────
+    function payWithPaystack(movie) {
+      const handler = PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: prompt("Please enter your email address:") || "demo@user.com",
+        amount: 400000, // ₦4,000.00 → kobo
+        currency: "NGN",
+        ref: 'rcstr_' + Math.floor((Math.random() * 1000000000) + 1),
+        metadata: {
+          movie_id: movie.id,
+          movie_title: movie.title || movie.name || 'Unknown'
+        },
+        callback: function(response) {
+          // Payment successful
+          alert(`Payment successful! Reference: ${response.reference}\nYou now own: ${movie.title || movie.name}`);
+          boughtMovies[movie.id] = true;
+          localStorage.setItem('boughtMovies', JSON.stringify(boughtMovies));
+          closeModal();
+          // You would normally verify the transaction on your backend here
+        },
+        onClose: function() {
+          alert('Payment window closed.');
+        }
+      });
+      handler.openIframe();
+    }
+
+    // ────────────────────────────────────────────────
+    // LIBRARY
+    // ────────────────────────────────────────────────
+    function showLibrary() {
+      pageTitle.textContent = 'My Library';
+      moviesGrid.innerHTML = '';
+
+      if (Object.keys(boughtMovies).length === 0) {
+        moviesGrid.innerHTML = '<p style="text-align:center; padding:6rem 1rem; color:#aaa;">Your library is empty.<br>Buy movies to see them here.</p>';
+        return;
+      }
+
+      const ids = Object.keys(boughtMovies);
+      Promise.all(
+        ids.map(id => fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}`).then(r => r.json()).catch(() => null))
+      ).then(movies => {
+        const valid = movies.filter(Boolean);
+        if (valid.length === 0) {
+          moviesGrid.innerHTML = '<p style="text-align:center; padding:6rem 1rem; color:#aaa;">No movies could be loaded.</p>';
+        } else {
+          displayMovies(valid);
+        }
       });
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // GHOST PAYMENT MODAL (DEMO) - FIXED WITH VALIDATION & CENTRAL ACCOUNT
-    // ──────────────────────────────────────────────────────────────
-    function openGhostModal(action) {
-      currentAction = action;
-      document.getElementById('paymentInfo').innerHTML = `
-        <strong>${action === 'rent' ? 'Rent' : 'Buy'}:</strong> ${currentMovie.title || currentMovie.name}<br>
-        Amount: ${action === 'rent' ? '₦1,500' : '₦4,000'} (Demo Only)
-      `;
-      document.getElementById('amountDisplay').value = action === 'rent' ? '1500' : '4000';
-      document.getElementById('accountBalance').textContent = `₦${centralAccountBalance}`;
-      ghostModal.style.display = 'flex';
-      ghostModal.querySelector('select').focus();
-    }
-
-    function closeGhostModal() {
-      ghostModal.style.display = 'none';
-    }
-
-    const paymentForm = document.getElementById('ghostPaymentForm');
-    paymentForm.addEventListener('submit', e => {
-      e.preventDefault();
-      if (paymentForm.checkValidity()) {
-        const amount = parseInt(document.getElementById('amountDisplay').value);
-        centralAccountBalance += amount;
-        localStorage.setItem('centralAccountBalance', centralAccountBalance);
-
-        if (currentAction === 'rent') {
-          const expiry = new Date();
-          expiry.setDate(expiry.getDate() + 7); // 7-day rental
-          rentedMovies[currentMovie.id] = expiry.toISOString();
-          localStorage.setItem('rentedMovies', JSON.stringify(rentedMovies));
-        } else if (currentAction === 'buy') {
-          boughtMovies[currentMovie.id] = true;
-          localStorage.setItem('boughtMovies', JSON.stringify(boughtMovies));
-        }
-
-        alert('Payment successful! (This is a demo — nothing was charged)');
-        closeGhostModal();
-        closeModal();
-      } else {
-        alert('Please fill out all required fields.');
-      }
-    });
-
-    document.getElementById('method').addEventListener('change', e => {
-      document.getElementById('cardFields').style.display = e.target.value === 'card' ? 'block' : 'none';
-    });
-
-    // ──────────────────────────────────────────────────────────────
-    // BASIC NAVIGATION (placeholders)
-    // ──────────────────────────────────────────────────────────────
     function showHome() {
       searchInput.value = '';
       pageTitle.textContent = 'Popular Movies';
@@ -923,12 +619,9 @@
       getMovies(currentUrl, currentPage);
     }
 
-    function showLibrary() {
-      pageTitle.textContent = 'My Library';
-      moviesGrid.innerHTML = '<p style="text-align:center; padding:4rem; color:var(--text-light);">Your library is empty (demo feature).</p>';
-    }
-
-    // Initial load
+    // ────────────────────────────────────────────────
+    // INIT
+    // ────────────────────────────────────────────────
     loadGenres();
     showHome();
   </script>
